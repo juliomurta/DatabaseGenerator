@@ -1,0 +1,11 @@
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\bin\Debug\Murta.DatabaseGenerator.Test.dll
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\bin\Debug\Murta.DatabaseGenerator.Test.pdb
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\obj\Debug\Murta.DatabaseGenerator.Test.csprojResolveAssemblyReference.cache
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\obj\Debug\Murta.DatabaseGenerator.Test.dll
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\obj\Debug\Murta.DatabaseGenerator.Test.pdb
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\bin\Debug\Murta.DatabaseGenerator.dll
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\bin\Debug\Murta.DatabaseGenerator.pdb
+C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\bin\Debug\Murta.DatabaseGenerator.Test.dll.config
+C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\bin\Debug\MySql.Data.dll
+C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\bin\Debug\Murta.DatabaseGenerator.Test.dll.CodeAnalysisLog.xml
+C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Test\bin\Debug\Murta.DatabaseGenerator.Test.dll.lastcodeanalysissucceeded

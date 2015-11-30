@@ -1,0 +1,7 @@
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator\bin\Debug\Murta.DatabaseGenerator.dll
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator\bin\Debug\Murta.DatabaseGenerator.pdb
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator\obj\Debug\Murta.DatabaseGenerator.dll
+c:\users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator\obj\Debug\Murta.DatabaseGenerator.pdb
+C:\Users\42083371844\Documents\Visual Studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator\obj\Debug\Murta.DatabaseGenerator.csprojResolveAssemblyReference.cache
+C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator\bin\Debug\Murta.DatabaseGenerator.dll.CodeAnalysisLog.xml
+C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator\bin\Debug\Murta.DatabaseGenerator.dll.lastcodeanalysissucceeded
