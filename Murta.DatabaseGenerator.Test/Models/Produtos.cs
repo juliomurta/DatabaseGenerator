@@ -19,5 +19,6 @@ namespace Murta.DatabaseGenerator.Test.Models
 
         [Column("PRECO", "DOUBLE")]
         public double Preco { get; set; }
+        public Clientes Cliente { get; set; }
     }
 }

@@ -7,19 +7,24 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Murta.DatabaseGenerator.Utils;
 
 namespace Murta.DatabaseGenerator
 {
     public class Generator
     {
         protected IDbConnection connection = null;
+        protected IEnumerable<Type> classesToTable = null;
 
-        public Generator(IDbConnection connection)
+        public Generator(IDbConnection connection, IEnumerable<Type> classesToTable)
         {
             if (connection == null) throw new Exception("Connection instance is null.");
 
+            if (classesToTable == null) throw new Exception("List of types is not defined.");
+
             try
             {
+                this.classesToTable = classesToTable;
                 this.connection = connection;
 
                 if (this.connection.State != ConnectionState.Open)
@@ -37,7 +42,7 @@ namespace Murta.DatabaseGenerator
             }
         }
 
-        public void GenerateSchema(IEnumerable<Type> classesToTable)
+        public void GenerateSchema()
         {
             var command = this.connection.CreateCommand();
 
@@ -48,7 +53,7 @@ namespace Murta.DatabaseGenerator
                 var databaseScript = new StringBuilder();
                 var foreignKeysStatements = new StringBuilder();
 
-                foreach (var classToTable in classesToTable)
+                foreach (var classToTable in this.classesToTable)
                 {
                     var tableAnnotation = (Table)System.Attribute.GetCustomAttributes(classToTable, typeof(Table))[0];
                     var tableName = tableAnnotation.Name;
@@ -58,7 +63,7 @@ namespace Murta.DatabaseGenerator
                     var properties = classToTable.GetProperties();
                     foreach (var property in properties)
                     {
-                        databaseScript.Append(this.GenerateCollumn(property));
+                        databaseScript.Append(this.GenerateCollumn(property, false));
                     }
                      
                     var indexLastComma = databaseScript.ToString().LastIndexOf(',');
@@ -70,7 +75,7 @@ namespace Murta.DatabaseGenerator
                 }
 
                 databaseScript.Append(foreignKeysStatements);
-
+                databaseScript = databaseScript.DeleteLastComma();
                 command.CommandText = databaseScript.ToString();
 
                 command.ExecuteNonQuery();
@@ -90,7 +95,7 @@ namespace Murta.DatabaseGenerator
             }
         }
 
-        protected string GenerateCollumn(PropertyInfo property)
+        protected string GenerateCollumn(PropertyInfo property, bool isForeignKey)
         {
             if (property == null)
             {
@@ -100,8 +105,17 @@ namespace Murta.DatabaseGenerator
             if (System.Attribute.GetCustomAttributes(property, typeof(Column)).Length != 0)
             {
                 var propertyAnnotation = (Column)System.Attribute.GetCustomAttributes(property, typeof(Column))[0];
-                var columnName = propertyAnnotation.Name;
                 var columnType = propertyAnnotation.Type;
+                var columnName = string.Empty;
+
+                if (isForeignKey)
+                {
+                    columnName = property.DeclaringType.Name.ToUpper() + "_" + propertyAnnotation.Name;
+                }
+                else
+                {
+                    columnName = propertyAnnotation.Name;
+                }
 
                 return string.Format("{0} {1} {2} ", columnName, columnType.ToString(), ", ");    
             }
@@ -156,22 +170,31 @@ namespace Murta.DatabaseGenerator
                 var foreignKeyProperties = property.PropertyType.GetProperties();
 
                 foreach (var foreignProperty in foreignKeyProperties)
-                {                    
-                    var foreignColumn = (Column)System.Attribute.GetCustomAttributes(foreignProperty, typeof(Column))[0];
-                    var foreignPrimaryKey = property.PropertyType.GetProperties().Where(p => this.IsPrimaryKey(p)).FirstOrDefault();
-
-                    var column = (Column)System.Attribute.GetCustomAttributes(foreignPrimaryKey, typeof(Column))[0];
-
-                    if (this.IsManyToManyRelationship(foreignPrimaryKey))
+                {                                        
+                    if (this.IsManyToManyRelationship(foreignProperty))
                     {
-                        //TODO: building...
+                        var firstPrimaryKey = property.PropertyType.GetProperties().Where(p => this.IsPrimaryKey(p)).FirstOrDefault();
+                        var secondPrimaryKey = property.DeclaringType.GetProperties().Where(p => this.IsPrimaryKey(p)).FirstOrDefault();
+
+                        foreignKeyStatement.AppendFormat("CREATE TABLE {0} ( ", 
+                                                            firstPrimaryKey.DeclaringType.Name.Substring(0,3).ToUpper() + "_" +
+                                                            secondPrimaryKey.DeclaringType.Name.Substring(0, 3).ToUpper());
+
+                        foreignKeyStatement.Append(this.GenerateCollumn(firstPrimaryKey, true));
+                        foreignKeyStatement.Append(this.GenerateCollumn(secondPrimaryKey, true));
+                        foreignKeyStatement = foreignKeyStatement.DeleteLastComma();
+                        foreignKeyStatement.Append(" ) ");
                     }
                     else
                     {
+                        var foreignColumn = (Column)System.Attribute.GetCustomAttributes(foreignProperty, typeof(Column))[0];
+                        var foreignPrimaryKey = property.PropertyType.GetProperties().Where(p => this.IsPrimaryKey(p)).FirstOrDefault();
+
+                        var column = (Column)System.Attribute.GetCustomAttributes(foreignPrimaryKey, typeof(Column))[0];
+
                         if (column.Name == foreignColumn.Name && column.Type == foreignColumn.Type && this.IsPrimaryKey(foreignProperty))
                         {
                             var foreignType = (Table)System.Attribute.GetCustomAttributes(property.PropertyType, typeof(Table))[0];
-
 
                             foreignKeyStatement.Append(string.Format(" ALTER TABLE {0} ADD CONSTRAINT FK_{0}_{2}_{1} FOREIGN KEY ( {1} ) REFERENCES  {2} ({3});",
                                                         tableName,
@@ -187,9 +210,11 @@ namespace Murta.DatabaseGenerator
         }
 
         protected bool IsManyToManyRelationship(PropertyInfo property)
-        {
-            //TODO: building...
-            return false;
+        {            
+            var isForeignMappedOnList = this.classesToTable.Where(t => t.Equals(property.PropertyType)).Any();
+            var isDeclaringType = this.classesToTable.Where(t => t.Equals(property.DeclaringType)).Any();
+
+            return isForeignMappedOnList && isDeclaringType;
         }
 
         protected bool IsPrimaryKey(PropertyInfo property)

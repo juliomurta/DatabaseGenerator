@@ -21,8 +21,8 @@ namespace Murta.DatabaseGenerator.Test
             var tipos = new List<Type>();
             tipos.AddRange(MappingClasses("Murta.DatabaseGenerator.Test.Models"));
 
-            var databaseGenerator = new Generator(connection);
-            databaseGenerator.GenerateSchema(tipos);
+            var databaseGenerator = new Generator(connection, tipos);
+            databaseGenerator.GenerateSchema();
         }
 
         private static MySqlConnection GenerateConnection()

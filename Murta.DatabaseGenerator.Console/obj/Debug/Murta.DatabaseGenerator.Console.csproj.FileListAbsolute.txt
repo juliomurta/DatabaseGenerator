@@ -6,5 +6,3 @@ C:\Users\42083371844\Documents\Visual Studio 2013\Murta.DatabaseGenerator\Murta.
 C:\Users\42083371844\Documents\Visual Studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Console\obj\Debug\Murta.DatabaseGenerator.Console.pdb
 C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Console\bin\Debug\Murta.DatabaseGenerator.dll
 C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Console\bin\Debug\Murta.DatabaseGenerator.pdb
-C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Console\bin\Debug\Murta.DatabaseGenerator.Console.exe.CodeAnalysisLog.xml
-C:\Users\42083371844\documents\visual studio 2013\Murta.DatabaseGenerator\Murta.DatabaseGenerator.Console\bin\Debug\Murta.DatabaseGenerator.Console.exe.lastcodeanalysissucceeded

@@ -43,12 +43,11 @@ namespace Murta.DatabaseGenerator.Console
 
                 System.Console.WriteLine("Database Connected Succefully!!!");
 
-                var databaseGenerator = new Generator(databaseConnection);
-
                 var types = new List<Type>();
                 types.AddRange(MappingClasses("Murta.DatabaseGenerator.Console.Models"));
 
-                databaseGenerator.GenerateSchema(types);
+                var databaseGenerator = new Generator(databaseConnection, types);
+                databaseGenerator.GenerateSchema();
 
                 System.Console.WriteLine("Schema generated succefully!!");
             }

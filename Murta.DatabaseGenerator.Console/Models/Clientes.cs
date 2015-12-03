@@ -23,7 +23,6 @@ namespace Murta.DatabaseGenerator.Console.Models
 
         [Column("CPF", "VARCHAR(20)")]
         public string CPF { get; set; }
-
         public Produtos Produto { get; set; }
     }
 }
