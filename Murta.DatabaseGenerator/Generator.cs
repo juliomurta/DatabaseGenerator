@@ -18,67 +18,61 @@ namespace Murta.DatabaseGenerator
 
         public Generator(IDbConnection connection, IEnumerable<Type> classesToTable)
         {
-            if (connection == null) throw new Exception("Connection instance is null.");
-
-            if (classesToTable == null) throw new Exception("List of types is not defined.");
-
-            try
+            if (connection == null)
             {
-                this.classesToTable = classesToTable;
-                this.connection = connection;
+                throw new ArgumentException("Connection instance is null.");
+            }
 
-                if (this.connection.State != ConnectionState.Open)
-                {
-                    this.connection.Open();
-                }
-            }
-            catch (DataException)
+            if (classesToTable == null)
             {
-                throw;
+                throw new ArgumentException("List of types is not defined.");
             }
-            finally
-            {
-                this.connection.Close();
-            }
+
+            this.classesToTable = classesToTable;
+            this.connection = connection;            
         }
 
         public void GenerateSchema()
-        {
-            var command = this.connection.CreateCommand();
-
+        {            
             try
             {
-                this.connection.Open();
-                
-                var databaseScript = new StringBuilder();
-                var foreignKeysStatements = new StringBuilder();
-
-                foreach (var classToTable in this.classesToTable)
+                using (var command = this.connection.CreateCommand())
                 {
-                    var tableAnnotation = (Table)System.Attribute.GetCustomAttributes(classToTable, typeof(Table))[0];
-                    var tableName = tableAnnotation.Name;
-
-                    databaseScript.Append(string.Format(" CREATE TABLE {0} (", tableName));
-
-                    var properties = classToTable.GetProperties();
-                    foreach (var property in properties)
+                    if (this.connection.State != ConnectionState.Open)
                     {
-                        databaseScript.Append(this.GenerateCollumn(property, false));
+                        this.connection.Open();
                     }
-                     
-                    var indexLastComma = databaseScript.ToString().LastIndexOf(',');
-                    databaseScript.Remove(indexLastComma, 1);
-                    databaseScript.Append("); ");
 
-                    databaseScript.Append(this.GeneratePrimaryKey(properties, tableName));
-                    foreignKeysStatements.Append(this.GenerateForeignKeys(properties, tableName));
+                    var databaseScript = new StringBuilder();
+                    var foreignKeysStatements = new StringBuilder();
+
+                    foreach (var classToTable in this.classesToTable)
+                    {
+                        var tableAnnotation = (Table)System.Attribute.GetCustomAttributes(classToTable, typeof(Table))[0];
+                        var tableName = tableAnnotation.Name;
+
+                        databaseScript.Append(string.Format(" CREATE TABLE {0} (", tableName));
+
+                        var properties = classToTable.GetProperties();
+                        foreach (var property in properties)
+                        {
+                            databaseScript.Append(this.GenerateCollumn(property, false));
+                        }
+
+                        var indexLastComma = databaseScript.ToString().LastIndexOf(',');
+                        databaseScript.Remove(indexLastComma, 1);
+                        databaseScript.Append("); ");
+
+                        databaseScript.Append(this.GeneratePrimaryKey(properties, tableName));
+                        foreignKeysStatements.Append(this.GenerateForeignKeys(properties, tableName));
+                    }
+
+                    databaseScript.Append(foreignKeysStatements);
+                    databaseScript = databaseScript.DeleteLastComma();
+                    command.CommandText = databaseScript.ToString();
+
+                    command.ExecuteNonQuery();
                 }
-
-                databaseScript.Append(foreignKeysStatements);
-                databaseScript = databaseScript.DeleteLastComma();
-                command.CommandText = databaseScript.ToString();
-
-                command.ExecuteNonQuery();
             }
             catch (DataException)
             {
@@ -90,8 +84,6 @@ namespace Murta.DatabaseGenerator
                 {
                     this.connection.Close();    
                 }
-
-                command.Dispose();
             }
         }
 
